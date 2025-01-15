@@ -1,11 +1,16 @@
 #!/bin/sh
 
-CONFIG=/etc/youtube.conf
+CONFIG=/etc/yt.conf
+HOME_CONFIG=${HOME}/.config/yt.conf
 
-. "${CONFIG}"
+if [ -f "$HOME_CONFIG" ]; then
+    . "$HOME_CONFIG"
+else
+    . "$CONFIG"
+fi
 
 CACHE=${HOME}/.cache/simple-youtube
-mkdir -f $CACHE
+mkdir -p $CACHE
 
 [ -z "$MAX_RESULTS" ] && MAX_RESULTS=35
 [ -z "$RSSFILE" ] && RSSFILE="${HOME}/.emacs.d/elfeed.org"
@@ -16,7 +21,7 @@ mkdir -f $CACHE
 HISTORY_FILE="${CACHE}/searchhistory"
 LAST_VIDEO_FILE="${CACHE}/last_video"
 
-touch "$LAST_VIDEO"
+touch "$LAST_VIDEO_FILE"
 touch "$HISTORY_FILE"
 
 [ -z "$MENU_CMD" ] && MENU_CMD="dmenu"
@@ -63,7 +68,7 @@ get_channel_infos () {
                          -d "type=channel" \
                          -d "maxResults=25" \
                          -d "part=snippet" \
-                         -d "key=$YOUTUBE")
+                         -d "key=$YOUTUBE_APIKEY")
 
     chanchoice=$(echo "$channelsearch" | jq -r ".items[] | .snippet.channelTitle, .snippet.description" | awk '(NR%2==1){chantitle=$0}(NR%2==0){printf ("%2d: %s : %s\n",NR/2,chantitle,$0)}' | $MENU_CMD -l 25 -i -p "Which channel ?") || get_search_query
     local channum=$(echo "$chanchoice" | sed 's/:.*/-1/' | bc)

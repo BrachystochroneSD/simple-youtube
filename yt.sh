@@ -2,6 +2,7 @@
 
 CONFIG=/etc/yt.conf
 HOME_CONFIG=${HOME}/.config/yt.conf
+APPNAME=simple-youtube
 
 if [ -f "$HOME_CONFIG" ]; then
     . "$HOME_CONFIG"
@@ -25,11 +26,10 @@ touch "$LAST_VIDEO_FILE"
 touch "$HISTORY_FILE"
 
 [ -z "$MENU_CMD" ] && MENU_CMD="dmenu"
-[ -z "$NOTIFY_CMD" ] && NOTIFY_CMD="dunstify"
 
 error_print () {
-    echo "$1"
-    $NOTIFY_CMD "$1"
+    echo "Error: $1"
+    notify-send -a "$APPNAME" -i youtube -e "Error: $1"
     exit 1
 }
 

@@ -85,7 +85,7 @@ get_channel_infos () {
 get_search_query () {
     channel_id="" # reset channel_id
     local menu_entry=$(head -n 1 "$HISTORY_FILE" | awk '{print$0}END{printf "\nChannel Search\nOrder\nShow History\nClear History"}' | $MENU_CMD -i -l 20 -p "Youtube search:")
-    [ -z "$menu_entry" ] && error_print "Youtube search aborted"
+    [ -z "$menu_entry" ] && exit 1
 
     case "$menu_entry" in
         http*) launch_youtube_link "$menu_entry" ;;

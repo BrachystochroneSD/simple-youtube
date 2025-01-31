@@ -146,4 +146,8 @@ mpv_launch() {
 }
 
 check_internet_connection
-get_search_query
+if [ -n "$1" ]; then
+    launch_youtube_link "$1"
+else
+    get_search_query
+fi
